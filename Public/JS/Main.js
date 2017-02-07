@@ -2,7 +2,6 @@
 var socket = io(); 
 	var i;
 	
-
 // GET the user's name and set it in the cookies
 function setName()
 	{	
@@ -10,9 +9,9 @@ function setName()
 		if (!name || name == null)
 		{
 			var name= window.prompt('What is you name?');
-		    Cookies.set('name',name,1);
+		    Cookies.set('name',name);
 		}
-	/*	socket.emit('io:',name);*/
+		socket.emit('io:name',name);
 		$('#messageBox').focus();
 		
 		return name;
@@ -34,6 +33,25 @@ function getTime(timestamp)
 	return String(h + ':' + m + ':' + s) ;
 }	
 
+//keeps latest message at the bottom of the screen
+// http://stackoverflow.com/a/11910887/2870306
+
+function scrollToBottom () {
+    $(window).scrollTop($('#messages').height());
+  }
+
+  window.onresize = function () {
+    scrollToBottom();
+  };
+  
+  
+ function rendermessage(msg){
+	 var name=getName();
+	 for (i in msg) {
+			var msgs = name + ":" + msg[i];
+			$('#messages').append($('<li>').text(msgs));
+		}
+ }
 	/* Emit the message sended by the user */
 	$('form').submit(function() {
 		
@@ -45,6 +63,7 @@ function getTime(timestamp)
 	      $('#messageBox').focus();
 	      return false;
 	    }
+	    //check of the name is set or not
 	    if (!Cookies.get('name') || Cookies.get('name').length < 1
 	    	      || Cookies.get('name') === 'null') {
 	    	      getName();
@@ -57,20 +76,15 @@ function getTime(timestamp)
 		return false;
 	});
 	
-	
 	/* 
 	 * showing all the messages
 	 * poped from the redis
 	 */	
 	socket.on('all messages', function(Allreply) {	
+		 scrollToBottom();
 		$('#messages').empty();
-	          var name=getName();
-		for (i in Allreply) {
-			var msg = name + ":" + Allreply[i];
-			$('#messages').append($('<li>').text(msg));
-		}
+		rendermessage(Allreply);
 	});
-
 
 	/*
 	 * showing last inserted messages so that user need not to refresh the page
@@ -78,10 +92,7 @@ function getTime(timestamp)
 	 */
 	  /*var reply =JSON.parse(reply);  var name=reply.name ;*/
 	
-	socket.on('chat message', function(reply) {                                              
-		var name=getName();
-		for (i in reply) {
-			var msg = name + ":" + reply[i];
-			$('#messages').append($('<li>').text(msg));
-		}
+	socket.on('chat message', function(reply) {     
+		 scrollToBottom();
+		 rendermessage(reply);
 	});
