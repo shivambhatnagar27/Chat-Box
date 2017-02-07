@@ -12,7 +12,7 @@ function setName()
 			var name= window.prompt('What is you name?');
 		    Cookies.set('name',name,1);
 		}
-		socket.emit('chat message',name);
+	/*	socket.emit('io:',name);*/
 		$('#messageBox').focus();
 		
 		return name;
