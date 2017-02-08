@@ -29,7 +29,7 @@ io.on('connection', function(socket) {
 	var id = socket.id;
 	socket.on('chat message', function(data) {
 		var str = '{ "name":" ' + data.name + ' " ,"id":"' + id
-				+ '" , "message":"' + data.msg + '"  }';
+				+ '" , "message":"' + data.msg + '" , "time":"' + data.time + '"  }';
 		var jsonObj = JSON.parse(str);
 		//pushed the message typed by the user                                              
 		client.rpush([ 'messages', JSON.stringify(jsonObj) ]);

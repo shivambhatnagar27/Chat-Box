@@ -23,20 +23,23 @@ function getName(){
 }
 
 //Takes time as a parameter and convert it into the string
-function getTime(timestamp)
+function getTime()
 {
 	var t,h,m,s;
-	t= new Date(timestamp);
-	h=t.getHours();
-	m=t.getMinutes();
-	s=t.getSeconds();
-	
-	return String(h + ':' + m + ':' + s) ;
+	t= new Date();
+	h=addZero(t.getHours());
+	m=addZero(t.getMinutes());	
+	s=addZero(t.getSeconds());
+	return String(h + ':' + m + ":" + s) ;
+}
+
+// add the zero before the number if number is less than 10
+function addZero (number) {
+return (number < 10) ? '0' + number : number;
 }	
 
-//keeps latest message at the bottom of the screen
-// http://stackoverflow.com/a/11910887/2870306
 
+//keeps latest message at the bottom of the screen
 function scrollToBottom () {
     $(window).scrollTop($('#messages').height());
   }
@@ -51,8 +54,20 @@ function scrollToBottom () {
 	 	    var obj=JSON.parse(data[i]);
 	 	    var name=obj.name;
 	 	    var msg= obj.message;
-			var msgs = name + ":" + msg;
-			$('#messages').append($('<li>').text(msgs));
+	 	    var time=obj.time;
+	 	    if(name == null){
+               name = "Anonymous";
+	 	    }
+//generating the html for render the messages
+var html = '<li class=\'row\'>';
+    html += '<span class=\'name\'>' + name + ': </span>';
+    html += '<span class=\'msg\'>' + msg + '</span>';
+    html += '<small class=\'time\ pull-right\'>' + time + ' </small>';
+    html += '</li>';
+ 
+			$('#messages').append(html);
+			
+
 		}
  }
 	/* Emit the message sended by the user */
@@ -73,7 +88,7 @@ function scrollToBottom () {
 	    	    } 
 	    else{
 		var msg=$('#messageBox').val();
-		socket.emit('chat message', {msg:msg,name:getName()});
+		socket.emit('chat message', {msg:msg,name:getName(),time:getTime()});
 		$('#messageBox').val('');
 		 $('#messageBox').attr('placeholder', '');
 	    }

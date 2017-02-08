@@ -49,4 +49,9 @@ form button {
 }
 .name{
 	color:red;
+	margin-left: 10px;
+}
+.time{
+	color:blue;
+	margin-right: 20px;
 }
