@@ -5,6 +5,7 @@ var socket = io();
 // GET the user's name and set it in the cookies
 function setName()
 	{	
+
 		var name= Cookies.get('name');
 		if (!name || name == null)
 		{
@@ -45,10 +46,12 @@ function scrollToBottom () {
   };
   
   
- function rendermessage(msg){
-	 var name=getName();
-	 for (i in msg) {
-			var msgs = name + ":" + msg[i];
+ function rendermessage(data){
+	 for (i in data) { 
+	 	    var obj=JSON.parse(data[i]);
+	 	    var name=obj.name;
+	 	    var msg= obj.message;
+			var msgs = name + ":" + msg;
 			$('#messages').append($('<li>').text(msgs));
 		}
  }
@@ -69,7 +72,8 @@ function scrollToBottom () {
 	    	      getName();
 	    	    } 
 	    else{
-		socket.emit('chat message', $('#messageBox').val());
+		var msg=$('#messageBox').val();
+		socket.emit('chat message', {msg:msg,name:getName()});
 		$('#messageBox').val('');
 		 $('#messageBox').attr('placeholder', '');
 	    }

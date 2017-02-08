@@ -19,7 +19,7 @@ form {
 form input {
 	border: 0;
 	padding: 10px;
-	width: 90%;
+	width: 100%;
 	margin-right: .5%;
 }
 
@@ -40,7 +40,7 @@ form button {
 	padding: 5px 10px;
 }
 #messages li:last-child {
-	margin-bottom:70px;
+	margin-bottom:100px;
 }
 
 #messages li:nth-child(odd) {

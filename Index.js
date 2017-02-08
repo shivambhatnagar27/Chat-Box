@@ -7,7 +7,7 @@ var Array = require('node-array');
 var redis = require('redis');
 var client = redis.createClient();
 var cookieParser = require('cookie-parser');
-
+var connection=[]
 app.use(cookieParser());
 //Redis Connections
 client.on('connect', function() {
@@ -19,22 +19,17 @@ app.use(express.static(path.join(__dirname, 'Public')));
 
 //routes and sends to the views
 app.get('/', function(req, res) {
-	res.sendFile('Views/Index.html', { /* var name = req.param('name');*/
+	res.sendFile('Views/Index.html', {                                                    
 		root : __dirname
-	});
-	/*defining global varible (name)it is getting the name 
-	from rhe cookies which we set at the time user entered their name*/
-	name = req.cookies.name;
-    console.log(name);
+	});	
 });
 //Setting Connection
 io.on('connection', function(socket) {
 	//got the user id form socket this is the unique id for each and every connection
 	var id = socket.id;
-	socket.on('chat message', function(msg) {
-		var str = '{ "name":" ' + global.name + ' " ,"id":"' + id
-				+ '" , "message":"' + msg + '"  }';
-
+	socket.on('chat message', function(data) {
+		var str = '{ "name":" ' + data.name + ' " ,"id":"' + id
+				+ '" , "message":"' + data.msg + '"  }';
 		var jsonObj = JSON.parse(str);
 		//pushed the message typed by the user                                              
 		client.rpush([ 'messages', JSON.stringify(jsonObj) ]);
